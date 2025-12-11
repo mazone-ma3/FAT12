@@ -1,4 +1,4 @@
-/* FILE.COM (X68K 1.22MB専用版) */
+/* FILE.X (X68K 1.22MB専用版) */
 /* 使い方:	FILE AUTOEXEC.BAT	  → 画面表示 */
 /*			FILE KAIJI.SYS 0   → 0000にロード */
 

@@ -1,4 +1,4 @@
-/* FILE.COM (PC-98 1.22MB専用版) */
+/* FILE.EXP (FM TOWNS1.22MB専用版) */
 /* 使い方:	FILE AUTOEXEC.BAT	  → 画面表示 */
 /*			FILE KAIJI.SYS 9000:0   → 9000:0000にロード */
 
@@ -18,7 +18,7 @@
 #define DA_UA 0x90
 
 
-/* PC-98 1.22MB用パラメータ */
+/* FM TOWNS 1.22MB用パラメータ */
 #define ROOTDIR_LBA	5	// ルートディレクトリ開始LBA
 #define ROOTDIR_NUM	6
 #define DATA_LBA	11	// データ開始LBA
