@@ -198,7 +198,7 @@ int main(int argc, char **argv)
 	if (argc < 2) {
 		printf("Usage: FILE filename [off]\r\n");
 		printf("Ex: FILE AUTOEXEC.BAT\r\n");
-		printf("    FILE GAME.EXE 8000:0\r\n");
+		printf("    FILE GAME.EXE 0\r\n");
 		return 1;
 	}
 
