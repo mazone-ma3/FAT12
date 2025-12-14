@@ -82,7 +82,7 @@ static char fatbuf[SECTSIZE];
 unsigned int next_cluster(unsigned int c)
 {
 	unsigned int offset = c + (c >> 1);	   // 
-	unsigned int sec = 1 + (offset >> 9);	 // 
+	unsigned int sec = 1 + (offset >> 9);	 /* SECTSIZE 512 */
 	unsigned int off = offset & 511;
 	unsigned int val;
 
@@ -175,9 +175,9 @@ int load_file(const char *name, char far *dest, unsigned int *size)
 		printf("%c", a);
 	}
 */
-			p += 512;
-			if (size2 <= 512) { size2 = 0; break; }
-			size2 -= 512;
+			p += SECTSIZE;
+			if (size2 <= SECTSIZE) { size2 = 0; break; }
+			size2 -= SECTSIZE;
 		}
 		cluster = next_cluster(cluster);
 	}

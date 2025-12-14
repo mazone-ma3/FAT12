@@ -43,7 +43,7 @@ int read_lba98(unsigned int lba, char far *dst)
 	unsigned int head  = (lba / s) % h;//(lba % (h * s)) / s;
 	unsigned int sect  =(lba % s) + 1;
 
-	printf("read lba %d sect %d head %d cyl %d\n", lba, sect, head, cyl);
+//	printf("read lba %d sect %d head %d cyl %d\n", lba, sect, head, cyl);
 
 	regs.x.ax = ((AH << 8) & 0xff00) | DA_UA | DRIVENO;
 	regs.x.bx = SECTSIZE;
@@ -82,14 +82,14 @@ static char fatbuf[SECTSIZE];
 unsigned int next_cluster(unsigned int c)
 {
 	unsigned int offset = c + (c >> 1);	   // 
-	unsigned int sec = 1 + (offset >> 10);	 // 
+	unsigned int sec = 1 + (offset >> 10);	 /* SECTSIZE 1024 */
 
 //	unsigned int sec = cluter_to_lba(c)
 
 	unsigned int off = offset & 511;
 	unsigned int val;
 
-	printf("offset %d sec %d off %d\n", offset, sec, off);
+//	printf("offset %d sec %d off %d\n", offset, sec, off);
 
 	if (sec != cached_sec) {
 		if (read_lba98(sec, fatbuf)) return 0xFFF;
@@ -180,9 +180,9 @@ int load_file(const char *name, char far *dest, unsigned int *size)
 		printf("%c", a);
 	}
 */
-			p += 512;
-			if (size2 <= 512) { size2 = 0; break; }
-			size2 -= 512;
+			p += SECTSIZE;
+			if (size2 <= SECTSIZE) { size2 = 0; break; }
+			size2 -= SECTSIZE;
 		}
 		cluster = next_cluster(cluster);
 	}

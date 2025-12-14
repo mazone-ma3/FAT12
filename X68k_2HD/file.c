@@ -32,6 +32,7 @@
 
 char buf[SECTSIZE];
 
+/* X68000 IOCS 1.22MB読み込み */
 int read_lba68(unsigned int lba, char *dst)
 {
 	int h = HEAD;
@@ -60,45 +61,6 @@ int read_lba68(unsigned int lba, char *dst)
 		return 1;
 }
 
-#ifdef DEBUG
-/* PC-98 BIOS 1.22MB読み込み（INT 1Bh AH=22h） */
-int read_lba98(unsigned int lba, char *dst)
-{
-	union REGPACK regs;
-//	int i,  a;
-	int h = HEAD;
-	int s = SECTOR;
-
-	unsigned int cyl   = lba / (h * s);		   // 1シリンダ
-	unsigned int head  = (lba / s) % h;//(lba % (h * s)) / s;
-	unsigned int sect  =(lba % s) + 1;
-
-//	printf("read lba %d sect %d head %d cyl %d\n", lba, sect, head, cyl);
-
-	regs.x.ax = ((AH << 8) & 0xff00) | DA_UA | DRIVENO;
-	regs.x.bx = SECTSIZE;
-	regs.x.cx = ((3 << 8) & 0xff00) | (cyl & 0x00ff);
-	regs.x.dx = ((head << 8) & 0xff00) | (sect & 0x00ff);
-	regs.x.es = FP_SEG(dst);
-	regs.x.bp = FP_OFF(dst);
-
-	intr(0x1b, &regs);
-//	if(!(regs.x.flags & 1)){
-//	printf("success\n");
-/*	for(i = 0 ; i < 1024; ++i){
-		a = dst[i];
-		if(a < 0x20)
-			a = 0x20;
-		printf("%c", a);
-	}*/
-//	return 0;
-	return (regs.x.flags & 1);   // CF=1ならエラー
-//		return 0;
-//	}
-//	printf("error\n");
-//		return 1;
-}
-#endif
 
 unsigned int cluster_to_lba(unsigned int c)
 {
@@ -112,7 +74,7 @@ static char fatbuf[SECTSIZE];
 unsigned int next_cluster(unsigned int c)
 {
 	unsigned int offset = c + (c >> 1);	   // 
-	unsigned int sec = 1 + (offset >> 10);	 // 
+	unsigned int sec = 1 + (offset >> 10);	 /* SECTSIZE 1024 */
 	unsigned int off = offset & 511;
 	unsigned int val;
 
@@ -214,9 +176,9 @@ int load_file(const char *name, char *dest, unsigned int *size)
 		printf("%c", a);
 	}
 */
-			p += 512;
-			if (size2 <= 512) { size2 = 0; break; }
-			size2 -= 512;
+			p += SECTSIZE;
+			if (size2 <= SECTSIZE) { size2 = 0; break; }
+			size2 -= SECTSIZE;
 		}
 		cluster = next_cluster(cluster);
 	}
